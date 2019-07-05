@@ -14,7 +14,7 @@
 /*****************************
     K e r n e l   S p a c e
 *****************************/
-
+var dev_mode = true;
 /**************************
   Lightening  Kernel 1.0,3
 **************************/
@@ -29,7 +29,7 @@ let kernel = (function() {
 	return {
 
 		// Public Variables
-		version : '0.1x', // kernel version
+		version : '0.3x', // kernel version
 
 		// Get functions
 		get power() 
@@ -112,14 +112,16 @@ let user_interface = (function() {
 		DESKTOP_STAGE2 = 1200,
 
 		// Display statuses. True = visible. False = hidden.
-		info_drop = false;
+		info_drop = false,
+
+		DESKTOP_ITEMS = ["Terminal","launch('terminal')","About","launch('about')","Shutdown","launch('shutdown')"];
 
 	return {
 
 		version : '0.1', //@ Display Driver Version
 
 		get boot() { // What to show while booting up.
-
+			if (dev_mode) { user_interface.desktop() } else {
 			/* Stage 1 */
 			kernel.pause = { exe: "kernel.backColor = '#fff'", timeout: BOOT_STAGE1};
 
@@ -133,13 +135,13 @@ let user_interface = (function() {
 			/* Stage 4 */
 			setTimeout(function() {kernel.backgroundPicture = 'url("sys/styles/wallpaper_blur.jpg")';},BOOT_STAGE4);
 			setTimeout(function() {kernel.screenHMTL = '<div id="login-title">Welcome.</div><input class="welcome-input" type="text" placeholder="Enter username."><input class="welcome-input" type="password" placeholder="Enter password."><button onclick="sys.login;" id="login-button">Login <i class="fas fa-sign-in-alt"></i></button>';},BOOT_STAGE4);
+			}
 		},
 
 		get clear() { //@ Clears the screen for shutdown
 			kernel.screenHMTL = '';
 			kernel.backgroundPicture = 'none';
 			kernel.backColor = '#000';
-
 		},
 
 		get desktop() { //@ Show the desktop
@@ -149,7 +151,13 @@ let user_interface = (function() {
 			setTimeout(function() {kernel.screenHTML = '';},DESKTOP_STAGE1);
 
 			/* Stage 2 */
-			setTimeout(function() {kernel.screenHMTL = '<div id="top-bar"><a onclick="user_interface.info" id="info"><i class="fas fa-info"></i></a><span class="mono"> consoleOS 6</span><a id="time"></a></div><ul id="info-dropdown" style="visibility:hidden;"><li>Test</li><li>Test</li></ul>';},DESKTOP_STAGE2);
+			var i_menu = "";
+			var len = (DESKTOP_ITEMS.length);
+			for (var i = 0; i < len;i++) {
+				i_menu += '<li id="item_' + DESKTOP_ITEMS[i] + '" onclick="' + DESKTOP_ITEMS[i + 1] + '">' + DESKTOP_ITEMS[i] + "</li>";
+				i++;
+			}
+			setTimeout(function() {kernel.screenHMTL = '<div id="top-bar"><a onclick="user_interface.info" id="info"><i class="fas fa-info"></i></a><span class="mono"> consoleOS 6</span><a id="time"></a></div><ul id="info-dropdown" style="visibility:hidden;">'+ i_menu + "</ul>";},DESKTOP_STAGE2);
 			setTimeout(function() {kernel.backgroundPicture = 'url("sys/styles/wallpaper.jpg")';time();},DESKTOP_STAGE2);
 		},
 
@@ -238,5 +246,66 @@ document.onkeydown = function(evt) {
 	} else { isEnter = (evt.keyCode == ENTER_KEY); }
 	if (isEnter) {
 		power();
+	}
+}
+
+/* 
+	X WINDOW SYSTEM
+	                  */
+function launch(window_name) {
+
+	switch(window_name) {
+		case "terminal":
+				windowCreate(150,300,"normal","Terminal","<b>Terminal interface will go here.</b><br>(c) iJD.");
+				document.getElementById("item_Terminal").style.borderColor = "#f00";
+			break;
+		case "about":
+				windowCreate(200,400,"normal","About",'<b style="font-family:monospace;">consoleOS 6</b> developed by <i>i</i>JD. Full 16-bit color. Graphical User Interface.<br>Version ' + kernel.version +' Developed in California.');
+			break;
+		case "shutdown":
+
+			break;
+		default:
+
+			break;
+	}
+}
+
+function windowCreate(x_size,y_size,type,name,contents) {
+
+	var SCREEN_MARGIN = 8;
+
+	switch (type) {
+		case "normal":
+			var remove = "$('#" + name + "').remove();windowDelete('" + name + ');";';
+			$('#info-dropdown').after('<div><div id="' + name + '" class="window_normal" style="height:' + x_size + 'px;width: ' + y_size +'px;"><div class="window-topbar">'+ name +'<div class="btn-light"><a class="btn-close" onclick="' + remove +'">X</a></div></div><div class="window-contents"' + contents + '</div></div></div>');
+			$('#' + name ).draggable({
+			  containment: [SCREEN_MARGIN, SCREEN_MARGIN, (800 - y_size), (600 - x_size)]
+			});
+			break;
+		case "yes/no":
+
+			break;
+		default:
+
+			break;
+	}
+}
+
+function windowDelete(name) {
+	switch(window_name) {
+		case "terminal":
+				windowCreate(150,300,"normal","Terminal","<b>Terminal interface will go here.</b><br>(c) iJD.");
+				document.getElementById("item_Terminal").style.borderColor = "#f00";
+			break;
+		case "about":
+				windowCreate(200,400,"normal","About",'<b style="font-family:monospace;">consoleOS 6</b> developed by <i>i</i>JD. Full 16-bit color. Graphical User Interface.<br>Version ' + kernel.version +' Developed in California.');
+			break;
+		case "shutdown":
+				power();
+			break;
+		default:
+
+			break;
 	}
 }

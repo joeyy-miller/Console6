@@ -129,6 +129,55 @@ body {
 .mono {
     font-family: 'Inconsolata', monospace;
 }
+
+#test{
+  width: 50px;
+  height: 50px;
+  border: 2px solid #000;
+  background: gray;
+  position: absolute;
+  top: 10px;
+  left: 0;
+}
+
+.window-topbar {
+    padding: 10px;
+    text-align: left;
+    /* cursor: move; */
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    background-color: rgba(39,40,34,0.8);
+    color: #fff;
+    font-family: 'Inconsolata', monospace;
+}
+.window-contents {
+    background: #e7e8e7;
+    color: #272822;
+    font-size: 14px;
+    padding: 10px;
+}
+a.btn-close {
+    float: right;
+    height: 24px;
+    font-size: 20px;
+    background-color: rgba(39,40,34,0.0);
+    color: #e7e8e7;
+    cursor: pointer;
+    border: none;
+}
+.btn-light {
+    display: inline-block;
+    float: right;
+}
+.btn-light:hover {
+    padding: 10px 10px 9px 10px;
+    background: red;
+    margin-top: -10px;
+    margin-right: -10px;
+}
+
+
 /* Sys Colors */
 span._s { color: #9ed62a; }
 span._g { color: #bfbfbf; }
@@ -161,6 +210,8 @@ span._b { font-weight: 700; }
 }
 
 @import url('https://fonts.googleapis.com/css?family=Inconsolata:400,700');
+
+
 
 /*
 body {
